@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"strconv"
 
 	"github.com/facundocarballo/docker-basics/types"
 )
@@ -56,5 +57,22 @@ func CreateTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 }
 
 func DeleteTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	// Get the id of the task to delete.
+	queryParams := r.URL.Query()
+	taskIdString := queryParams.Get("id")
 
+	taskId, err := strconv.Atoi(taskIdString)
+	if err != nil {
+		http.Error(w, "Error converting the id to an integer.", http.StatusBadRequest)
+		return
+	}
+
+	if !types.DeleteTask(taskId, db) {
+		http.Error(w, "Cannot delete the task.", http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte("Task deleted."))
 }

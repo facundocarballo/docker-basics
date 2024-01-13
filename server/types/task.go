@@ -47,7 +47,7 @@ func CreateTask(description string, db *sql.DB) *Task {
 	var createdAt []uint8
 	err = db.QueryRow("SELECT @taskId, @createdAt").Scan(&id, &createdAt)
 	if err != nil {
-		fmt.Printf("Error selecting the tokenId and the createdAt OUT variables from the Stored Procedure.")
+		fmt.Printf("Error selecting the taskId and the createdAt OUT variables from the Stored Procedure.")
 		return nil
 	}
 
@@ -59,7 +59,7 @@ func CreateTask(description string, db *sql.DB) *Task {
 }
 
 func GetTasks(db *sql.DB) []Task {
-	rows, err := db.Query(database.GET_TASKS)
+	rows, err := db.Query(database.Q_GET_TASKS)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -80,4 +80,28 @@ func GetTasks(db *sql.DB) []Task {
 	}
 
 	return tasks
+}
+
+func DeleteTask(id int, db *sql.DB) bool {
+	statement, err := db.Prepare(database.DELETE_TASK_SP)
+	if err != nil {
+		fmt.Printf("Error preparing the Stored Procedure to delete a task.")
+		return false
+	}
+	defer statement.Close()
+
+	_, err = statement.Exec(id)
+	if err != nil {
+		fmt.Printf("Error executing the Stored Procedure to delete the task.")
+		return false
+	}
+
+	var exist int
+	err = db.QueryRow("SELECT @exist").Scan(&exist)
+	if err != nil {
+		fmt.Printf("Error selecting the exist OUT variable from the Stored Procedure.")
+		return false
+	}
+
+	return exist > 0
 }
