@@ -7,8 +7,9 @@ import (
 	"net/http"
 
 	"github.com/facundocarballo/docker-basics/database"
-	"github.com/facundocarballo/docker-basics/handlers"
+	"github.com/facundocarballo/docker-basics/handler"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/handlers"
 	"github.com/joho/godotenv"
 )
 
@@ -18,17 +19,17 @@ func HelloWorld(w http.ResponseWriter, r *http.Request) {
 
 func HandleTasks(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	if r.Method == http.MethodGet {
-		handlers.GetAllTasks(w, r, db)
+		handler.GetAllTasks(w, r, db)
 		return
 	}
 
 	if r.Method == http.MethodPost {
-		handlers.CreateTask(w, r, db)
+		handler.CreateTask(w, r, db)
 		return
 	}
 
 	if r.Method == http.MethodDelete {
-		handlers.DeleteTask(w, r, db)
+		handler.DeleteTask(w, r, db)
 		return
 	}
 
@@ -57,6 +58,13 @@ func main() {
 		HandleTasks(w, r, db)
 	})
 
+	corsMiddleware := handlers.CORS(
+		handlers.AllowedOrigins([]string{"http://localhost:3000"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "OPTIONS", "PUT", "PATCH", "DELETE"}),
+		handlers.AllowedHeaders([]string{"Content-Type", "Authorization"}),
+		handlers.AllowCredentials(),
+	)
+
 	fmt.Println("Servidor escuchando en el puerto 8080...")
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8080", corsMiddleware(http.DefaultServeMux))
 }
