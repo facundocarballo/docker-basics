@@ -10,6 +10,9 @@ import (
 	"github.com/facundocarballo/docker-basics/types"
 )
 
+const ContentType = "Content-Type"
+const appJson = "application/json"
+
 func GetAllTasks(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	tasks := types.GetTasks(db)
 	if tasks == nil {
@@ -23,7 +26,7 @@ func GetAllTasks(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set(ContentType, appJson)
 	w.Write(jsonData)
 }
 
@@ -52,7 +55,7 @@ func CreateTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set(ContentType, appJson)
 	w.Write(jsonData)
 }
 
@@ -73,6 +76,6 @@ func DeleteTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set(ContentType, appJson)
 	w.Write([]byte("Task deleted."))
 }
