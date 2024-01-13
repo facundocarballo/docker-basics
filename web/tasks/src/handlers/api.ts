@@ -1,5 +1,3 @@
-import { AxiosRequestConfig } from "axios";
-
 const BASE_URL = "http://localhost:8080/"
 
 export type ApiTask = {

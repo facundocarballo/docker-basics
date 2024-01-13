@@ -3,11 +3,11 @@ import React from "react";
 import Task from "../types/task";
 
 interface IInputTask {
-  tasks: Task[],
-  setTasks: (_tasks: Task[]) => void,
+  tasks: Task[];
+  setTasks: (_tasks: Task[]) => void;
 }
 
-export const InputTask = ({tasks, setTasks}: IInputTask) => {
+export const InputTask = ({ tasks, setTasks }: IInputTask) => {
   // Attributes
   const [value, setValue] = React.useState<string>("");
   // Context
@@ -16,7 +16,7 @@ export const InputTask = ({tasks, setTasks}: IInputTask) => {
     const task = await Task.Create(value);
     if (task === undefined) {
       alert("Error creating this new task.");
-      return
+      return;
     }
 
     setTasks([...tasks, task]);
@@ -24,19 +24,17 @@ export const InputTask = ({tasks, setTasks}: IInputTask) => {
   };
   // Component
   return (
-    <>
-      <HStack w={{ lg: "50%", sm: "90%" }}>
-        <Input
-          w="90%"
-          placeholder="Insert a new task"
-          value={value}
-          onChange={(e) => setValue(e.currentTarget.value)}
-          color='white'
-        />
-        <Button colorScheme="blue" onClick={handleAddTask} w='90px'>
-          ADD
-        </Button>
-      </HStack>
-    </>
+    <HStack w={{ lg: "50%", sm: "90%" }}>
+      <Input
+        w="90%"
+        placeholder="Insert a new task"
+        value={value}
+        onChange={(e) => setValue(e.currentTarget.value)}
+        color="white"
+      />
+      <Button colorScheme="blue" onClick={handleAddTask} w="90px">
+        ADD
+      </Button>
+    </HStack>
   );
 };
