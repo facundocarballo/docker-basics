@@ -46,7 +46,7 @@ func main() {
 	// Get DB Instance
 	db, err := sql.Open("mysql", database.GetDSN())
 	if err != nil {
-		panic(err.Error())
+		fmt.Printf("Error at connecting to the database: %s\n", err.Error())
 	}
 	defer db.Close()
 

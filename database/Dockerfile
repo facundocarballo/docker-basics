@@ -1,0 +1,8 @@
+FROM mysql:latest
+
+ENV MYSQL_RANDOM_ROOT_PASSWORD="12345"
+ENV MYSQL_DATABASE="DOCKER_TODO_LIST"
+ENV MYSQL_USER="facu"
+ENV MYSQL_PASSWORD="12345"
+
+COPY ./script.sql /docker-entrypoint-initdb.d/

@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"log"
 
 	"github.com/facundocarballo/docker-basics/database"
 )
@@ -61,7 +60,8 @@ func CreateTask(description string, db *sql.DB) *Task {
 func GetTasks(db *sql.DB) []Task {
 	rows, err := db.Query(database.Q_GET_TASKS)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("Error quering tasks: %s\n", err.Error())
+		return nil
 	}
 	defer rows.Close()
 
@@ -70,13 +70,15 @@ func GetTasks(db *sql.DB) []Task {
 		var task Task
 		err := rows.Scan(&task.Id, &task.Description, &task.CreatedAt)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Printf("Error scanning rows: %s\n", err.Error())
+			return nil
 		}
 		tasks = append(tasks, task)
 	}
 
 	if err := rows.Err(); err != nil {
-		log.Fatal(err)
+		fmt.Printf("Error rows: %s\n", err.Error())
+		return nil
 	}
 
 	return tasks
